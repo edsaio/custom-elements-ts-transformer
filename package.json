@@ -1,0 +1,29 @@
+{
+  "name": "custom-elements-ts-transformer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "ts-node src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edsaio/custom-elements-ts-transformer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/edsaio/custom-elements-ts-transformer/issues"
+  },
+  "homepage": "https://github.com/edsaio/custom-elements-ts-transformer#readme",
+  "dependencies": {
+    "typescript": "^3.1.6"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.5",
+    "@types/prettier": "^1.13.2",
+    "prettier": "^1.15.2",
+    "ts-node": "^7.0.1",
+    "tslib": "^1.9.3"
+  }
+}
