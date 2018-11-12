@@ -1,14 +1,16 @@
-// @ts-ignore
+
 
 import * as ts from 'typescript';
+import * as prettier from 'prettier';
 
 import { promises as fsAsync, mkdirSync } from 'fs';
 import { join } from 'path';
-import * as prettier from 'prettier';
+
+import { createDefineStatement } from './create-define-statement';
+import { createStaticProperty } from './create-static-property';
 
 function simpleTransformer<T extends ts.Node>(): ts.TransformerFactory<T> {
   return (context) => {
-
     const visit: ts.Visitor = (node) => {
       if (ts.isClassDeclaration(node) && node.decorators && node.name) {
         const decorator = node.decorators.find((decorator) => {
@@ -27,67 +29,20 @@ function simpleTransformer<T extends ts.Node>(): ts.TransformerFactory<T> {
 
           const argument = (<ts.CallExpression>decorator.expression).arguments[0] as ts.ObjectLiteralExpression;
 
-          const tag = argument.properties.find((property: ts.PropertyAssignment) => {
-            return (property.name as ts.Identifier).text === 'tag';
-          });
+          const defineCall = createDefineStatement(node, argument);
+          const style = createStaticProperty(argument, 'style');
+          const template = createStaticProperty(argument, 'template');
 
-          let defineCall;
-          if (tag) {
-            const name = (tag as ts.PropertyAssignment).initializer;
-            defineCall = ts.createStatement(ts.createCall(
-              ts.createPropertyAccess(
-                ts.createIdentifier('customElements'),
-                ts.createIdentifier('define')
-              ), undefined, [name, node.name]));
-          }
+          let styleTransform = ts.updateClassDeclaration(
+            node, 
+            node.decorators, 
+            node.modifiers,
+            node.name,
+            undefined, 
+            undefined,
+            [ style, template ])          
 
-          const style = argument.properties.find((property: ts.PropertyAssignment) => {
-            return (property.name as ts.Identifier).text === 'style';
-          });
-
-          let styleTransform;
-          if (style) {
-            const property = style as ts.PropertyAssignment;
-            const name = property.name as ts.Identifier;
-
-            const left = ts.createPropertyAccess(node.name, name);
-
-            const text = (property.initializer as ts.NoSubstitutionTemplateLiteral).text;
-            const returnStatement = ts.createReturn(ts.createNoSubstitutionTemplateLiteral(text));
-
-            const right = ts.createFunctionExpression(
-              undefined, undefined, undefined, undefined,
-              [], undefined, ts.createBlock([ returnStatement ])
-            );
-
-            const binaryExpr = ts.createBinary(left, ts.SyntaxKind.EqualsToken, right);
-            styleTransform = ts.createExpressionStatement(binaryExpr);
-          }
-
-          const template = argument.properties.find((property: ts.PropertyAssignment) => {
-            return (property.name as ts.Identifier).text === 'template';
-          });
-
-          let templateTransform;
-          if (template) {
-            const property = template as ts.PropertyAssignment;
-            const name = property.name as ts.Identifier;
-
-            const left = ts.createPropertyAccess(node.name, name);
-
-            const text = (property.initializer as ts.NoSubstitutionTemplateLiteral).text;
-            const returnStatement = ts.createReturn(ts.createNoSubstitutionTemplateLiteral(text));
-
-            const right = ts.createFunctionExpression(
-              undefined, undefined, undefined, undefined,
-              [], undefined, ts.createBlock([ returnStatement ])
-            );
-
-            const binaryExpr = ts.createBinary(left, ts.SyntaxKind.EqualsToken, right);
-            templateTransform = ts.createExpressionStatement(binaryExpr);            
-          }
-
-          return [node, styleTransform, templateTransform, defineCall]; 
+          return [styleTransform, defineCall]; 
 
         }
         return node;      
