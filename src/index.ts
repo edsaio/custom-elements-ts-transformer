@@ -7,7 +7,7 @@ import { promises as fsAsync, mkdirSync } from 'fs';
 import { join } from 'path';
 
 import { createDefineStatement } from './create-define-statement';
-import { createStaticProperty } from './create-static-property';
+import { updateClass } from './update-class';
 
 function simpleTransformer<T extends ts.Node>(): ts.TransformerFactory<T> {
   return (context) => {
@@ -29,22 +29,12 @@ function simpleTransformer<T extends ts.Node>(): ts.TransformerFactory<T> {
 
           const argument = (<ts.CallExpression>decorator.expression).arguments[0] as ts.ObjectLiteralExpression;
 
-          const defineCall = createDefineStatement(node, argument);
-          const style = createStaticProperty(argument, 'style');
-          const template = createStaticProperty(argument, 'template');
-
-          let styleTransform = ts.updateClassDeclaration(
-            node, 
-            node.decorators, 
-            node.modifiers,
-            node.name,
-            undefined, 
-            undefined,
-            [ style, template ])          
-
-          return [styleTransform, defineCall]; 
-
+          return [
+            updateClass(node, argument), 
+            createDefineStatement(node, argument)
+          ]; 
         }
+
         return node;      
       }
 
@@ -63,18 +53,18 @@ function simpleTransformer<T extends ts.Node>(): ts.TransformerFactory<T> {
   const source = await fsAsync.readFile(SOURCE_FILE, 'utf8');
 
   let result = ts.transpileModule(source, {
-    compilerOptions: {module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2016 },
+    compilerOptions: {module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2018 },
     transformers: { 
-      before: [
-        simpleTransformer()
-      ]
+      before: [ simpleTransformer() ]
     }
   });
   
   const FILE_PATH = 'dist/output.js';
   
   mkdirSync('dist', { recursive: true });
-  fsAsync.writeFile(FILE_PATH, prettier.format(result.outputText, { tabWidth: 2 }));  
+  fsAsync.writeFile(FILE_PATH, 
+    prettier.format(result.outputText, { tabWidth: 2, parser: 'babylon' })
+  );  
 })();
 
 
