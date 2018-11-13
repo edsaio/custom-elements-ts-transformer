@@ -9,13 +9,15 @@ import { join } from 'path';
 import { createDefineStatement } from './create-define-statement';
 import { updateClass } from './update-class';
 
+const CLASS_DECORATOR = 'customElement';
+
 function simpleTransformer<T extends ts.Node>(): ts.TransformerFactory<T> {
   return (context) => {
     const visit: ts.Visitor = (node) => {
       if (ts.isClassDeclaration(node) && node.decorators && node.name) {
         const decorator = node.decorators.find((decorator) => {
           const decoratorExpr = decorator.expression;
-          return ts.isCallExpression(decoratorExpr) && decoratorExpr.expression.getText() === 'customElement';
+          return ts.isCallExpression(decoratorExpr) && decoratorExpr.expression.getText() === CLASS_DECORATOR;
         });
 
         if (decorator) {

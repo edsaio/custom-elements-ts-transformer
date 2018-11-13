@@ -1,10 +1,10 @@
-const customElement = (args) => {
+const CustomElement = (args) => {
   return (target) => {
     return target;
   }
 }
 
-@customElement({
+@CustomElement({
   tag: 'x-element',
   style: `
     x-element {  
