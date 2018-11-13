@@ -14,7 +14,7 @@ const rollupConfig = {
       typescript({
         tsconfig: 'src/tsconfig.json',
         transformers: [service => ({
-          before: [ ...transformer() ],
+          before: [ ...[], ...transformer() ],
           after: []
         })],
         check: false,
