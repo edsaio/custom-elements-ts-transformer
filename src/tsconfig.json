@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "allowUnreachableCode": false,
+    "declaration": true,
+    "experimentalDecorators": true,
+    "lib": ["es5", "es6", "dom"],
+    "module": "esNext",
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "../dist",
+    "baseUrl": ".",
+    "removeComments": true,
+    "target": "es6",
+    "sourceMap": true
+  },
+  "include": [
+    "./my-class.ts"
+  ]
+}

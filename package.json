@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "ts-node src/index.ts"
+    "build": "rm -rf dist node_modules/.tmp && ts-node src/build.ts"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/edsaio/custom-elements-ts-transformer#readme",
   "dependencies": {
+    "rollup": "^0.67.1",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-typescript2": "^0.18.0",
     "typescript": "^3.1.6"
   },
   "devDependencies": {
