@@ -2,6 +2,9 @@ import * as ts from 'typescript';
 
 import { updateClass } from './update-class';
 import { createDefineStatement } from './create-define-statement';
+import { addImports } from './add-imports';
+
+const CLASS_DECORATOR = 'CustomElement';
 
 export function transformer(): Array<ts.TransformerFactory<ts.SourceFile>> {
   const tsSourceTransformers: Array<ts.TransformerFactory<ts.SourceFile>> = [
@@ -13,7 +16,7 @@ export function transformer(): Array<ts.TransformerFactory<ts.SourceFile>> {
 const customElementDecorator = (node: ts.Node) => {
   return node.decorators.find((decorator) => {
     const decoratorExpr = decorator.expression;
-    return ts.isCallExpression(decoratorExpr) && decoratorExpr.expression.getText() === 'customElement';
+    return ts.isCallExpression(decoratorExpr) && decoratorExpr.expression.getText() === CLASS_DECORATOR;
   });
 }
 
@@ -35,6 +38,10 @@ const transform = (context: ts.TransformationContext, sf: ts.SourceFile) => {
         ]
       }
       return node;
+    }
+
+    if (ts.isImportDeclaration(node)) {
+      return addImports(node);
     }
 
     if (ts.isDecorator(node)) {

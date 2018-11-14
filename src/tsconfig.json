@@ -3,6 +3,7 @@
     "allowSyntheticDefaultImports": true,
     "allowUnreachableCode": false,
     "declaration": true,
+    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": ["es5", "es6", "dom"],
     "module": "esNext",
@@ -16,6 +17,6 @@
     "sourceMap": true
   },
   "include": [
-    "./my-class.ts"
+    "./demo/**/*.ts"
   ]
 }
