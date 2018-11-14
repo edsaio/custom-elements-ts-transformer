@@ -3,9 +3,7 @@ import {
   PropertyAssignment, 
   Identifier, 
   createGetAccessor, 
-  createModifier, 
   createBlock, 
-  SyntaxKind,
   ObjectLiteralElementLike
 } from 'typescript';
 
@@ -17,7 +15,7 @@ function getAccessor(arg: ObjectLiteralElementLike) {
   const name = property.name as Identifier;
   return createGetAccessor(
     undefined,
-    [ createModifier(SyntaxKind.StaticKeyword) ],
+    [ ], /// issue on static properties in inheritance
     name,
     [],
     undefined,

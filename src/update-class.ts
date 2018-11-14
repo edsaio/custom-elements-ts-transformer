@@ -1,4 +1,4 @@
-import { ClassDeclaration, ObjectLiteralExpression, updateClassDeclaration } from 'typescript';
+import { ClassDeclaration, ObjectLiteralExpression, updateClassDeclaration, createConstructor, ConstructorDeclaration, ClassElement } from 'typescript';
 import { createStaticProperty } from './create-static-property';
 
 export function updateClass(node: ClassDeclaration, argument: ObjectLiteralExpression) {
@@ -6,7 +6,7 @@ export function updateClass(node: ClassDeclaration, argument: ObjectLiteralExpre
     node.decorators, 
     node.modifiers,
     node.name,
-    undefined, 
     undefined,
-    [ createStaticProperty(argument, 'style'), createStaticProperty(argument, 'template') ])    
+    node.heritageClauses,
+    [ ...node.members, createStaticProperty(argument, 'style'), createStaticProperty(argument, 'template') ])    
 }

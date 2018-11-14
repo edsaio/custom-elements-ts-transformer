@@ -21,7 +21,7 @@ const transform = (context: ts.TransformationContext, sf: ts.SourceFile) => {
   const visitor: ts.Visitor = (node) => {
     if (ts.isClassDeclaration(node) && node.decorators && node.name) {    
       const decorator = customElementDecorator(node);
-
+      
       if (decorator) {
         const filteredDecorators = node.decorators.filter((d) => d !== decorator);
         node.decorators = (filteredDecorators.length > 0) 
@@ -34,7 +34,6 @@ const transform = (context: ts.TransformationContext, sf: ts.SourceFile) => {
           createDefineStatement(node, argument)
         ]
       }
-      
       return node;
     }
 
