@@ -9,7 +9,7 @@ const nodeResolve = require('rollup-plugin-node-resolve');
 const rollupConfig = {
   inputOptions: {
     treeshake: true,
-    input: 'src/my-class.ts',
+    input: 'src/demo/hello-world.element.ts',
     plugins: [
       typescript({
         tsconfig: 'src/tsconfig.json',
@@ -31,9 +31,9 @@ const rollupConfig = {
   outputOptions: {
     sourcemap: true,
     exports: 'named',
-    file: 'dist/my-class.js',
+    file: 'dist/bundle.js',
     name: 'my-class', 
-    format: 'umd'
+    format: 'es'
   }
 }
 

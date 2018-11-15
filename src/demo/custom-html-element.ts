@@ -1,11 +1,5 @@
-const customElement = (args) => {
-  return (target) => {
-    return target;
-  }
-}
-
-// @ts-ignore
-class BaseHTMLELement extends HTMLElement {
+/// @ts-ignore
+export class CustomHTMLElement extends HTMLElement {
 
   // @ts-ignore
   get style() { return '' }
@@ -14,6 +8,8 @@ class BaseHTMLELement extends HTMLElement {
 
   connectedCallback() {
     this.__render();
+    // @ts-ignore
+    this.onInit && this.onInit();
   }
 
   __render() {
@@ -28,20 +24,11 @@ class BaseHTMLELement extends HTMLElement {
 
 }
 
-@customElement({
-  tag: 'x-element',
-  style: `
-    h1 {  
-      color: red;
-    }`,
-  template: `
-    <h1>Hello World</h1>
-  `
-})
-class MyClass extends BaseHTMLELement { 
-  constructor() {
-    super();
-  }
+export interface SampleInterface {
+  name: string;
 }
 
 
+export interface SampleInterface2 {
+  fName: string;
+}
