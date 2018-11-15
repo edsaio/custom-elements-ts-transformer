@@ -23,3 +23,12 @@ export class CustomHTMLElement extends HTMLElement {
   }
 
 }
+
+export interface SampleInterface {
+  name: string;
+}
+
+
+export interface SampleInterface2 {
+  fName: string;
+}

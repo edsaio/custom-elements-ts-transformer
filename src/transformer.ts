@@ -8,7 +8,8 @@ const CLASS_DECORATOR = 'CustomElement';
 
 export function transformer(): Array<ts.TransformerFactory<ts.SourceFile>> {
   const tsSourceTransformers: Array<ts.TransformerFactory<ts.SourceFile>> = [
-    (context: ts.TransformationContext) => (file: ts.SourceFile) => transform(context, file)
+    (context: ts.TransformationContext) => (file: ts.SourceFile) => transform(context, file),
+    (context: ts.TransformationContext) => (file: ts.SourceFile) => addImports(context, file)
   ]
   return tsSourceTransformers;
 }
@@ -39,11 +40,7 @@ const transform = (context: ts.TransformationContext, sf: ts.SourceFile) => {
       }
       return node;
     }
-
-    if (ts.isImportDeclaration(node)) {
-      return addImports(node);
-    }
-
+  
     if (ts.isDecorator(node)) {
       return undefined;
     }
