@@ -1,5 +1,4 @@
 import { CustomElement } from './custom-element';
-
 @CustomElement({
   tag: 'hello-world',
   style: `
