@@ -6,14 +6,8 @@ const TEXT_CLASS_DECORATOR = 'CustomElement';
 const METHOD_NAME = 'customElements';
 const DEFINE_NAME = 'define';
 
-function defineCallStatement(node: ts.ClassDeclaration, decorator: ts.Decorator) {
-  const filteredDecorators = node.decorators.filter((d) => d !== decorator);
-  node.decorators = (filteredDecorators.length > 0) 
-    ? ts.createNodeArray(filteredDecorators)
-    : undefined;
-
+export function defineCallStatement(node: ts.ClassDeclaration, decorator: ts.Decorator) {
   const argument = (<ts.CallExpression>decorator.expression).arguments[0] as ts.ObjectLiteralExpression;
-
   return createDefineCallStatement(node, argument)
 }
 
@@ -24,9 +18,4 @@ export function createDefineCallStatement(node: ts.ClassDeclaration, argument: t
   return (tag) 
     ? ts.createStatement(ts.createCall(propertyAccess, undefined, [name, node.name]))
     : undefined;
-}
-
-export function createDefineStatement(context: ts.TransformationContext, sf: ts.SourceFile) {
-  const visitor = createVistorClassDecorator(context, TEXT_CLASS_DECORATOR, defineCallStatement)
-  return ts.visitNode(sf, visitor);
 }
