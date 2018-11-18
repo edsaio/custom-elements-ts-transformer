@@ -7,6 +7,7 @@ import { promises as fsAsync, mkdirSync } from 'fs';
 import { join } from 'path';
 
 import { classDeclaration } from './visitor';
+import * as ast from './ast';
 
 function simpleTransformer<T extends ts.Node>(): ts.TransformerFactory<T> {
   return (context) => {

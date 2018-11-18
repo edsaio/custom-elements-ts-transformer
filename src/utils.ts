@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
 import { ExpressionStatement } from 'estree';
+import { createClassDeclaration } from './ast/update-class';
 
 function hasImportDeclation(node: ts.ImportDeclaration, textModuleSpecifier: string) {
   return node.getFullText().includes(textModuleSpecifier);
@@ -23,7 +24,7 @@ export interface NamedImport {
 }
 
 export interface ClassDeclarationCallback {
-  (node: ts.ClassDeclaration, decorator: ts.Decorator): any;
+  (node: ts.ClassDeclaration, decorator: ts.Decorator): any
 }
 
 export function createVisitorImport(context: ts.TransformationContext, nameImport: NamedImport) {
@@ -39,15 +40,29 @@ export function createVisitorImport(context: ts.TransformationContext, nameImpor
   return visitor;
 }
 
+export function createVisitorClass(context: ts.TransformationContext) {
+  const visitor: ts.Visitor = (node) => {
+    if (ts.isClassDeclaration(node)) {
+      return createClassDeclaration(node);
+    }
+    return ts.visitEachChild(node, (child) => visitor(child), context);
+  }
+  return visitor;
+}
+
 export function createVistorClassDecorator(context: ts.TransformationContext, 
   textClassDecorator: string, 
-  callback: ClassDeclarationCallback
+  callbacks: ClassDeclarationCallback[]
 ) {
   const visitor: ts.Visitor = (node) => {
     if (ts.isClassDeclaration(node) && node.decorators && node.name) {
       const decorator = getClassDecorator(node, textClassDecorator);
-      if (decorator) {
-        return callback(node, decorator);
+      if (decorator) {      
+        const filteredDecorators = node.decorators.filter((d) => d !== decorator);
+        node.decorators = (filteredDecorators.length > 0) 
+          ? ts.createNodeArray(filteredDecorators)
+          : undefined;
+        return callbacks.map(callback => callback(node, decorator));
       }
       return node;
     }
