@@ -27,6 +27,10 @@ export interface ClassDeclarationCallback {
   (node: ts.ClassDeclaration, decorator: ts.Decorator): any
 }
 
+export interface CallbackClassDeclaration {
+  (node: ts.ClassDeclaration): ts.ClassDeclaration
+}
+
 export function createVisitorImport(context: ts.TransformationContext, nameImport: NamedImport) {
   const visitor: ts.Visitor = (node) => {
     if (ts.isImportDeclaration(node)) {
@@ -40,10 +44,10 @@ export function createVisitorImport(context: ts.TransformationContext, nameImpor
   return visitor;
 }
 
-export function createVisitorClass(context: ts.TransformationContext) {
+export function createVisitorClassDeclation(context: ts.TransformationContext, callback: CallbackClassDeclaration) {
   const visitor: ts.Visitor = (node) => {
     if (ts.isClassDeclaration(node)) {
-      return createClassDeclaration(node);
+      return callback(node);
     }
     return ts.visitEachChild(node, (child) => visitor(child), context);
   }

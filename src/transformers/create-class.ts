@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { createVistorClassDecorator, createVisitorClass } from '../utils';
+import { createVistorClassDecorator, createVisitorClassDeclation } from '../utils';
 import { defineCallStatement } from './define-statement';
 import { getStyleProperty, getTemplateProperty } from './get-property';
 
@@ -14,7 +14,11 @@ function updateClass(node: ts.ClassDeclaration, decorator: ts.Decorator) {
 }
 
 export function extendBaseClass(context: ts.TransformationContext, sf: ts.SourceFile) {
-  return ts.visitNode(sf, createVisitorClass(context));
+  function callback(node: ts.ClassDeclaration): ts.ClassDeclaration {
+    node.heritageClauses = ts.createNodeArray([ ast.heritageClauses(node, 'CustomHTMLElement') ]);
+    return ast.updateClassDeclaration(node, [ ...ast.addOrUpdateConstructor(node, true) ])
+  }
+  return ts.visitNode(sf, createVisitorClassDeclation(context, callback));
 }
 
 export function updateClassFromDecorator(context: ts.TransformationContext, sf: ts.SourceFile) {
