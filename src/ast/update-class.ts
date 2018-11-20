@@ -22,17 +22,6 @@ export function heritageClauses(node: ts.ClassDeclaration, baseClass: string) {
   )
 }
 
-export function createClassDeclaration(node: ts.ClassDeclaration) {
-  return ts.updateClassDeclaration(node,
-    node.decorators,
-    node.modifiers,
-    node.name,
-    undefined,
-    [ heritageClauses(node, 'CustomHTMLElement') ],
-    [ ...node.members, ...addOrUpdateConstructor(node, true) ]
-  )
-}
-
 export function updateClassDeclaration(node: ts.ClassDeclaration, elements: ts.ClassElement[]) {
   return ts.updateClassDeclaration(node, 
     node.decorators, 
