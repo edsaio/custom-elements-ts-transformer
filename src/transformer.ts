@@ -1,11 +1,16 @@
 import * as ts from 'typescript';
+import { TransformerFactory } from './transformers/transformer-factory';
 
-import { updateClassFromDecorator, extendBaseClass } from './transformers/create-class';
+const transformers = [
+  "update-class",
+  "import-custom-html-element",
+  "extends-class",
+  "toggle-decorator"
+]
 
-export function transformer(): Array<ts.TransformerFactory<ts.SourceFile>> {
-  const tsSourceTransformers: Array<ts.TransformerFactory<ts.SourceFile>> = [
-    (context: ts.TransformationContext) => (file: ts.SourceFile) => updateClassFromDecorator(context, file),
-    (context: ts.TransformationContext) => (file: ts.SourceFile) => extendBaseClass(context, file)
-  ]
-  return tsSourceTransformers;
+export function transformer() {
+  return transformers.map(transformer => {
+    const  Transformer = require(`./transformers/${transformer}`).default;
+    return (new Transformer() as TransformerFactory<ts.SourceFile>).factory();
+  });
 }

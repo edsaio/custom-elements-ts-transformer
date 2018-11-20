@@ -1,6 +1,13 @@
 import { CustomElement } from './custom-element';
 import { SampleInterface } from './custom-html-element';
 
+
+const Toggle = () => {
+  return (target: any, propName: any) => {
+    return target;
+  }
+}
+
 @CustomElement({
   tag: 'hello-world',
   style: `
@@ -13,4 +20,8 @@ import { SampleInterface } from './custom-html-element';
   `
 })
 export class HelloWorldElement {
+
+  @Toggle() checked;
+  @Toggle() required;
+
 }
