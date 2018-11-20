@@ -16,13 +16,10 @@ export const visitor = {
   importDeclaration(context: ts.TransformationContext, { textSpecifier, textModuleSpecifier }) {
     const visitor: ts.Visitor = (node) => {
       if (ts.isImportDeclaration(node)) {
-        const specifier = ts.createImportSpecifier(void 0, ts.createIdentifier("CustomHTMLElement"));
-        return ts.createImportDeclaration(
-          [],
-          node.modifiers,
-          ts.createImportClause(undefined, ts.createNamedImports([ specifier ])),
-          ts.createStringLiteral("./custom-html-element")
-        );
+        const importDeclaration = utils.createImport(node, { textSpecifier, textModuleSpecifier });
+        if (importDeclaration) {
+          return importDeclaration;
+        }
       }
       return ts.visitEachChild(node, (child) => visitor(child), context);
     }

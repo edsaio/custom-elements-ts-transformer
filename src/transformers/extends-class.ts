@@ -6,7 +6,7 @@ import { TransformerFactory } from './transformer-factory';
 const BASE_CLASS = 'CustomHTMLElement';
 
 function callback(node: ts.ClassDeclaration): ts.ClassDeclaration {
-  node.heritageClauses = ts.createNodeArray([ ast.heritageClauses(node, BASE_CLASS) ]);
+  node.heritageClauses = node.heritageClauses || ts.createNodeArray([ ast.utils.createHeritageClauses(node, BASE_CLASS) ])
   return ast.updateClassDeclaration(node, [ ...ast.addOrUpdateConstructor(node, true) ])
 }
 
